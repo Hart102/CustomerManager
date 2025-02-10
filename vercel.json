@@ -5,7 +5,14 @@
       }
     },
     "routes": [
-      { "src": "/(.*)",  "dest": "/login.html" }
+      {
+        "src": "/api/(.*)",
+        "dest": "/api/$1"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/login.html"
+      }
     ]
   }
   
