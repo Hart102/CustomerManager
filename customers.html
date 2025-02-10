@@ -68,6 +68,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+
             try {
                 const response = await fetch('/api/customer.php', {
                     method: 'GET',
@@ -75,6 +76,7 @@
                         'Content-Type': 'application/json'
                     }
                 });
+
                 const data = await response.json();
 
                 if (!data.isError) {
@@ -82,19 +84,22 @@
                     const tableBody = document.getElementById('customerTableBody');
                     customers.forEach(customer => {
                         const row = document.createElement('tr');
+                        
+                        const encodedCvUrl = `api/${customer.customer_cv}` || 'null';
+
                         row.innerHTML = `
                             <td>${customer.id}</td>
                             <td>${customer.customer_name}</td>
                             <td>${customer.customer_email}</td>
                             <td>${customer.customer_phone}</td>
                             <td>
+                                <button class="btn btn-success btn-sm" onclick="viewCv('${encodedCvUrl.replace(/'/g, "\\'")}')" ${encodedCvUrl === 'null' ? 'disabled' : ''}>View CV</button>
                                 <button class="btn btn-primary btn-sm edit-btn" data-id="${customer.id}">Edit</button>
                                 <button class="btn btn-danger btn-sm delete-btn" data-id="${customer.id}">Delete</button>
                             </td>
                         `;
                         tableBody.appendChild(row);
                     });
-
 
                     // Handle Edit
                     document.querySelectorAll('.edit-btn').forEach(button => {
@@ -104,20 +109,16 @@
                         });
                     });
 
-
                     // Handle Delete
                     document.querySelectorAll('.delete-btn').forEach(button => {
                         button.addEventListener('click', async (event) => {
                             const customerId = event.target.getAttribute('data-id');
-
                             const response = await fetch(`/api/customer.php?id=${customerId}`, {
                                 method: 'DELETE',
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
-                                body: JSON.stringify({
-                                    id: customerId
-                                })
+                                body: JSON.stringify({ id: customerId })
                             });
                             const data = await response.json();
                             if (!data.isError) {
@@ -128,12 +129,21 @@
                         });
                     });
                 } else {
-                    alert(data.message);
+                    document.getElementById('message').innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
                 }
             } catch (error) {
                 console.error('Error fetching customers:', error);
             }
+            
         });
+    const viewCv = (url) => {
+        if (!url || url === 'null') {
+            alert("No CV available.");
+            return;
+        }
+        window.open(url, '_blank');
+    };
+
     </script>
 </body>
 

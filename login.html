@@ -70,7 +70,7 @@
             const result = await response.json();
             const messageDiv = document.getElementById('message');
             if (!result.isError) {
-                window.location.href = '/add.html';
+                window.location.href = '/customers.html';
             }
             messageDiv.textContent = result.message;
         };

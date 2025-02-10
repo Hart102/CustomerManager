@@ -70,15 +70,13 @@
                     body: formData
                 });
 
-                console.log(response);
-
                 const data = await response.json();
                 const messageDiv = document.getElementById('message');
 
                 if (data.isError) {
                     messageDiv.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
                 } else {
-                    messageDiv.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                   window.location.href = '/customers.html';
                 }
             } catch (error) {
                 const messageDiv = document.getElementById('message');

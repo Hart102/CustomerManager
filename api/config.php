@@ -1,17 +1,9 @@
 <?php
-    // $host = '127.0.0.1';
-    // $db = 'userDB';
-    // $user = 'root';
-    // $password = '';
-    // $charset = 'utf8mb4';
-
-    $host = $_ENV['DG_HOST'];
-    $db = $_ENV['DB_NAME'];
-    $user = $_ENV['DB_USER'];
-    $password = $_ENV['DB_PASSWORD'];;
+    $host = '127.0.0.1';
+    $db = 'userDB';
+    $user = 'root';
+    $password = '';
     $charset = 'utf8mb4';
-
-    // $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
     $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
     $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
