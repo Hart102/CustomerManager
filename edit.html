@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Customer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="/customers.html">Customers</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/add.html">Add Customer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login.html">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register.html">Register</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="col-12 col-lg-4 mx-auto mt-5 shadow-lg p-4">
+        <h2 class="display-6 text-uppercase">Edit Customer</h2>
+        <form id="editCustomerForm" action="POST" enctype="multipart/form-data" >
+            <div class="form-group my-3">
+                <label for="customer_name">Name</label>
+                <input type="text" class="form-control" id="customer_name" name="customer_name" required>
+            </div>
+            <div class="form-group my-3">
+                <label for="customer_email">Email</label>
+                <input type="email" class="form-control" id="customer_email" name="customer_email" required>
+            </div>
+            <div class="form-group my-3">
+                <label for="customer_phone">Phone</label>
+                <input type="text" class="form-control" id="customer_phone" name="customer_phone" required>
+            </div>
+            <div class="form-group my-3">
+                <label for="customer_cv">Upload CV</label>
+                <input type="file" class="form-control-file" id="customer_cv" name="customer_cv">
+            </div>
+            <input type="hidden" id="customer_id" name="customer_id" value="1"> <!-- Example customer ID -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <div id="responseMessage" class="mt-3"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const customerId = urlParams.get('id');
+
+            // Fetch customer data and pre-fill the form
+            if (customerId) {
+                try {
+                    const response = await fetch(`/api/get_user.php?id=${customerId}`);
+                    const data = await response.json();
+
+                    if (!data.isError) {
+                        document.getElementById('customer_name').value = data.data.customer_name;
+                        document.getElementById('customer_email').value = data.data.customer_email;
+                        document.getElementById('customer_phone').value = data.data.customer_phone;
+                        document.getElementById('customer_id').value = data.data.id;
+                    }
+                } catch (error) {
+                    console.error("Error fetching customer:", error);
+                }
+            }
+
+            document.getElementById('editCustomerForm').addEventListener('submit', async (event) => {
+                event.preventDefault(); // Prevent default form action
+
+                const formData = new FormData(event.target);
+
+                try {
+                    const response = await fetch(`/api/edit_customer.php?id=${customerId}`, {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    const result = await response.json();
+                    if (!result.isError) {
+                        window.location.href = '/customers.html';
+                    }
+
+                    document.getElementById('responseMessage').innerHTML = response.ok
+                        ? `<div class="alert alert-success">${result.message}</div>`
+                        : `<div class="alert alert-danger">${result.message}</div>`;
+                } catch (error) {
+                    document.getElementById('responseMessage').innerHTML = '<div class="alert alert-danger">An error occurred</div>';
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
