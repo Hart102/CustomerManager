@@ -21,13 +21,13 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
+                    <li class="nav-item add-customer">
                         <a class="nav-link" href="/add.html">Add Customer</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item login">
                         <a class="nav-link" href="/login.html">Login</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item register">
                         <a class="nav-link" href="/register.html">Register</a>
                     </li>
                 </ul>
@@ -70,10 +70,14 @@
             const result = await response.json();
             const messageDiv = document.getElementById('message');
             if (!result.isError) {
+                localStorage.setItem('userId', result.data.id);
                 window.location.href = '/customers.html';
+
             }
             messageDiv.textContent = result.message;
         };
     </script>
+
+    
 </body>
 </html>
